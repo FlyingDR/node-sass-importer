@@ -1,0 +1,19 @@
+{
+  "name": "node-sass-importer",
+  "version": "1.0.0",
+  "description": "Implementation of custom importer for node-sass",
+  "main": "src/node-sass-importer.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FlyingDR/node-sass-importer.git"
+  },
+  "author": "Alexander Grimalovsky",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FlyingDR/node-sass-importer/issues"
+  },
+  "homepage": "https://github.com/FlyingDR/node-sass-importer#readme"
+}
