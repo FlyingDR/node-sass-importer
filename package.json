@@ -14,6 +14,7 @@
   },
   "homepage": "https://github.com/FlyingDR/node-sass-importer#readme",
   "dependencies": {
-    "app-root-path": "^3.0.0"
+    "app-root-path": "^3.0.0",
+    "debug": "^4.3.1"
   }
 }

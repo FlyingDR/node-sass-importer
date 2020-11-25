@@ -1,5 +1,8 @@
 const fs = require('fs');
 const appRoot = require('app-root-path').path;
+const debugRequest = require('debug')('node-sass-importer:request');
+const debugTry = require('debug')('node-sass-importer:try');
+const debugFound = require('debug')('node-sass-importer:found');
 
 /**
  * Resolve given path into real path
@@ -24,6 +27,7 @@ function normalizePath(path) {
  * @param {Object} runtime
  */
 function resolveImport(url, context, runtime) {
+    debugRequest(`import: ${url}, context: ${context}`)
     let resolved = undefined;
     let roots = runtime.options.roots;
     if (url[0] === '~') {
@@ -45,6 +49,7 @@ function resolveImport(url, context, runtime) {
                             local = normalizePath(local);
                             const lstat = fs.lstatSync(local);
                             if (lstat.isFile()) {
+                                debugFound(local);
                                 let lc = local;
                                 lc = lc.split('/');
                                 lc.pop();
@@ -60,6 +65,7 @@ function resolveImport(url, context, runtime) {
                                 };
                             }
                         } catch (e) {
+                            debugTry(local);
                             if (e.code !== 'ENOENT') {
                                 console.log(e.message);
                             }
