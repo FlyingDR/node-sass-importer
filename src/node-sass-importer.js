@@ -74,15 +74,14 @@ function getRuntime(context) {
                 paths: [
                     '',
                     '{url}',
-                    '{url}-scss',
-                    '{url}/scss'
                 ],
                 filePrefixes: [
+                    '_',
                     '',
-                    '_'
                 ],
                 fileExtensions: [
-                    '.scss'
+                    '.scss',
+                    '/_index.scss',
                 ]
             },
             stacks: [],
