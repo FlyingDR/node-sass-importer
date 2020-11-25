@@ -1,4 +1,4 @@
-var fs = require('fs');
+const fs = require('fs');
 
 /**
  * Resolve given path into real path
@@ -23,26 +23,26 @@ function normalizePath(path) {
  * @param {Object} runtime
  */
 function resolveImport(url, context, runtime) {
-    var resolved = undefined;
+    let resolved = undefined;
     runtime.options.roots.forEach(function (root) {
         runtime.options.paths.forEach(function (path) {
             runtime.options.filePrefixes.forEach(function (filePrefix) {
                 runtime.options.fileExtensions.forEach(function (fileExtension) {
                     if (resolved === undefined) {
-                        var local = url.split('/');
-                        var fn = local.pop();
+                        let local = url.split('/');
+                        let fn = local.pop();
                         fn = filePrefix + fn + fileExtension;
                         local.push(fn);
-                        local = [context, root, path, local.join('/')].join('/').replace(/\{url}/g, url).replace(/[\\\/]+/g, '/');
+                        local = [context, root, path, local.join('/')].join('/').replace(/{url}/g, url).replace(/[\\\/]+/g, '/');
                         try {
                             local = normalizePath(local);
-                            var lstat = fs.lstatSync(local);
+                            const lstat = fs.lstatSync(local);
                             if (lstat.isFile()) {
-                                var lc = local;
+                                let lc = local;
                                 lc = lc.split('/');
                                 lc.pop();
                                 lc = lc.join('/');
-                                var contents = '';
+                                let contents = '';
                                 if (runtime.loaded.indexOf(local) === -1) {
                                     contents = fs.readFileSync(local).toString();
                                 }
@@ -66,7 +66,7 @@ function resolveImport(url, context, runtime) {
 }
 
 function getRuntime(context) {
-    var runtime;
+    let runtime;
     if (context.options.importerRuntime === undefined) {
         runtime = {
             options: {
@@ -88,12 +88,12 @@ function getRuntime(context) {
             stacks: [],
             loaded: []
         };
-        for (var key in runtime.options) {
+        for (let key in runtime.options) {
             if (!runtime.options.hasOwnProperty(key)) {
                 return;
             }
-            if ((context.options.importerOptions || false) && (context.options.importerOptions[key] || false)) {
-                var custom = context.options.importerOptions[key];
+            if (context.options.importerOptions && (context.options.importerOptions[key])) {
+                let custom = context.options.importerOptions[key];
                 if (custom instanceof Array) {
                     custom.forEach(function (v) {
                         if (runtime.options[key].indexOf(v) === -1) {
@@ -119,11 +119,11 @@ function getRuntime(context) {
 }
 
 module.exports = function (url, prev, done) {
-    var runtime = getRuntime(this);
-    var resolved = undefined;
-    var stack = undefined;
+    const runtime = getRuntime(this);
+    let resolved = undefined;
+    let stack = undefined;
     while (runtime.stacks.length) {
-        var ts = runtime.stacks[runtime.stacks.length - 1];
+        const ts = runtime.stacks[runtime.stacks.length - 1];
         if (ts.id === prev) {
             stack = [].concat(ts.stack);
             break;
@@ -141,7 +141,7 @@ module.exports = function (url, prev, done) {
             stack.pop();
             continue;
         }
-        var stackIndex = stack.indexOf(resolved.context);
+        const stackIndex = stack.indexOf(resolved.context);
         if (stackIndex === -1) {
             stack.push(resolved.context);
         }
@@ -150,9 +150,9 @@ module.exports = function (url, prev, done) {
             runtime.loaded.push(resolved.path);
         }
         break;
-    } while (resolved === undefined && stack.length);
+    } while (stack.length);
     if (resolved !== undefined) {
-        var cnt = ((resolved.contents.length) ? resolved.contents : '// ' + url + "\n");
+        const cnt = ((resolved.contents.length) ? resolved.contents : '// ' + url + '\n');
         done({contents: cnt});
     } else {
         done({contents: '@error "Failed to load SCSS include: ' + url + '"'});
