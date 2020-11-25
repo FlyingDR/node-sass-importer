@@ -1,4 +1,5 @@
 const fs = require('fs');
+const appRoot = require('app-root-path').path;
 
 /**
  * Resolve given path into real path
@@ -24,7 +25,13 @@ function normalizePath(path) {
  */
 function resolveImport(url, context, runtime) {
     let resolved = undefined;
-    runtime.options.roots.forEach(function (root) {
+    let roots = runtime.options.roots;
+    if (url[0] === '~') {
+        roots = ['node_modules'];
+        context = appRoot;
+        url = url.substr(1);
+    }
+    roots.forEach(function (root) {
         runtime.options.paths.forEach(function (path) {
             runtime.options.filePrefixes.forEach(function (filePrefix) {
                 runtime.options.fileExtensions.forEach(function (fileExtension) {

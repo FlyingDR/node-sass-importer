@@ -12,5 +12,8 @@
   "bugs": {
     "url": "https://github.com/FlyingDR/node-sass-importer/issues"
   },
-  "homepage": "https://github.com/FlyingDR/node-sass-importer#readme"
+  "homepage": "https://github.com/FlyingDR/node-sass-importer#readme",
+  "dependencies": {
+    "app-root-path": "^3.0.0"
+  }
 }
