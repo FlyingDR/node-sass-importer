@@ -19,17 +19,26 @@ Importer tries to locate SCSS files by constructing their paths from given parts
 ### roots
 Array of additional root paths to search for SCSS files in. Should be defined as relative paths against current directory, main Node process is running from.      
 Default: ```['']```     
-Possible usage: ```['sass', 'node_modules']```
 
 ### paths
-Array of additional path components within any of root paths to search SCSS files in. Can contain ```{url}``` placeholder, it will be replaced with value of ```url``` argument that is passed to importer. Possible usage pattern is to let importer to load SCSS files from third-party libraries (e.g. Susy) installed as npm modules.   
-Default: ```['', '{url}', '{url}-scss', '{url}/scss']```    
+Array of additional path components within any of root paths to search SCSS files in. Can contain ```{url}``` placeholder, it will be replaced with value of ```url``` argument that is passed to importer.   
+Default: ```['', '{url}']```    
 
 ### filePrefixes
-Array of prefixes to set before SCSS file name. Normally is not needed to be overridden.   
-Default: ```['', '_']```
+Array of prefixes to set before SCSS file name. Normally is not need to be overridden.   
+Default: ```['_', '']```
 
 
 ### fileExtensions
-Array of file extension to set after SCSS file name. Normally is not needed to be overridden.   
-Default: ```['.scss']```
+Array of file extension to set after SCSS file name. Normally is not need to be overridden.   
+Default: ```['.scss', '/_index.scss']```
+
+## Importing of third-party libraries
+
+Since v2.0 in a case if you're importing third-party library from `node_modules` - you can do it by use `~` as a prefix. 
+
+For example: `@import "~bootstrap/scss/bootstrap"`. 
+
+## Import of directory index files
+
+Since v2.0 you can load `some-dir/_index.scss` by simply referencing directory itself: `@import "some-dir"` 
