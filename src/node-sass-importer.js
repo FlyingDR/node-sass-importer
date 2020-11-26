@@ -1,4 +1,5 @@
 const fs = require('fs');
+const {dirname} = require('path');
 const appRoot = require('app-root-path').path;
 const debugRequest = require('debug')('node-sass-importer:request');
 const debugTry = require('debug')('node-sass-importer:try');
@@ -144,7 +145,17 @@ module.exports = function (url, prev, done) {
         }
     }
     if (stack === undefined) {
-        runtime.stacks.push({id: prev, stack: [normalizePath(process.cwd())]});
+        let p = null;
+        try {
+            const ls = fs.lstatSync(prev);
+            if (ls.isFile()) {
+                p = dirname(prev);
+            }
+        } catch (e) {
+
+        }
+        p = p !== null ? p : process.cwd();
+        runtime.stacks.push({id: prev, stack: [normalizePath(p)]});
         stack = [].concat(runtime.stacks[runtime.stacks.length - 1].stack);
     }
     do {
