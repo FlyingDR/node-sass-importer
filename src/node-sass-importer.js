@@ -17,6 +17,7 @@ function normalizePath(path) {
     } catch (e) {
         path = path.replace(/[\\\/]+/g, '/');
     }
+
     return path;
 }
 
@@ -28,7 +29,7 @@ function normalizePath(path) {
  * @param {Object} runtime
  */
 function resolveImport(url, context, runtime) {
-    debugRequest(`import: ${url}, context: ${context}`)
+    debugRequest(`import: ${url}, context: ${context}`);
     let resolved = undefined;
     let roots = runtime.options.roots;
     if (url[0] === '~') {
@@ -40,40 +41,41 @@ function resolveImport(url, context, runtime) {
         runtime.options.paths.forEach(function (path) {
             runtime.options.filePrefixes.forEach(function (filePrefix) {
                 runtime.options.fileExtensions.forEach(function (fileExtension) {
-                    if (resolved === undefined) {
-                        let local = url.split('/');
-                        let fn = local.pop();
-                        fn = filePrefix + fn + fileExtension;
-                        local.push(fn);
-                        local = [context, root, path, local.join('/')].join('/').replace(/{url}/g, url).replace(/[\\\/]+/g, '/');
-                        try {
-                            local = normalizePath(local);
-                            const lstat = fs.lstatSync(local);
-                            if (lstat.isFile()) {
-                                debugFound(local);
-                                let lc = local;
-                                lc = lc.split('/');
-                                lc.pop();
-                                lc = lc.join('/');
-                                let contents = '';
-                                if (runtime.loaded.indexOf(local) === -1) {
-                                    contents = fs.readFileSync(local).toString();
-                                }
-                                resolved = {
-                                    context: lc,
-                                    path: local,
-                                    contents: contents
-                                };
+                    if (resolved !== undefined) {
+                        return;
+                    }
+                    let local = url.split('/');
+                    let fn = local.pop();
+                    fn = filePrefix + fn + fileExtension;
+                    local.push(fn);
+                    local = [context, root, path, local.join('/')].join('/').replace(/{url}/g, url).replace(/[\\\/]+/g, '/');
+                    try {
+                        local = normalizePath(local);
+                        const lstat = fs.lstatSync(local);
+                        if (lstat.isFile()) {
+                            debugFound(local);
+                            let lc = local;
+                            lc = lc.split('/');
+                            lc.pop();
+                            lc = lc.join('/');
+                            let contents = '';
+                            if (runtime.loaded.indexOf(local) === -1) {
+                                contents = fs.readFileSync(local).toString();
                             }
-                        } catch (e) {
-                            debugTry(local);
-                            if (e.code !== 'ENOENT') {
-                                console.log(e.message);
-                            }
+                            resolved = {
+                                context: lc,
+                                path: local,
+                                contents: contents,
+                            };
+                        }
+                    } catch (e) {
+                        debugTry(local);
+                        if (e.code !== 'ENOENT') {
+                            console.log(e.message);
                         }
                     }
-                })
-            })
+                });
+            });
         });
     });
     return resolved;
@@ -96,10 +98,10 @@ function getRuntime(context) {
                 fileExtensions: [
                     '.scss',
                     '/_index.scss',
-                ]
+                ],
             },
             stacks: [],
-            loaded: []
+            loaded: [],
         };
         for (let key in runtime.options) {
             if (!runtime.options.hasOwnProperty(key)) {
@@ -114,7 +116,7 @@ function getRuntime(context) {
                         }
                     });
                 } else {
-                    if (typeof(custom.toString) === 'function') {
+                    if (typeof (custom.toString) === 'function') {
                         custom = custom.toString();
                     }
                     custom += '';
